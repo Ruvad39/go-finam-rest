@@ -1,5 +1,17 @@
 package finam
 
+import "time"
+
+var TzMoscow = initMoscow()
+
+func initMoscow() *time.Location {
+	var loc, err = time.LoadLocation("Europe/Moscow")
+	if err != nil {
+		loc = time.FixedZone("MSK", int(3*time.Hour/time.Second))
+	}
+	return loc
+}
+
 // Side Сторона сделки
 type Side string
 

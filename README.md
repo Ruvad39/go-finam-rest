@@ -55,7 +55,7 @@ slog.Info("AccountsService.GetAccount",
 
 ## TODO
 * [x] AuthService
-* [x] OrdersService
-* [ ] AccountsService
-* [ ] AssetsService
+* [x] OrderService
+* [ ] AccountService
+* [ ] AssetService
 * [ ] MarketDataService

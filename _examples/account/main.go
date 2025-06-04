@@ -9,7 +9,6 @@ import (
 	"os"
 )
 
-// var r *http.Request
 func main() {
 	// предполагаем что есть файл .env в котором записан secret-Token в переменной FINAM_TOKEN
 	if err := godotenv.Load(); err != nil {

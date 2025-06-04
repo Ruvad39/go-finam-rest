@@ -7,12 +7,12 @@ import (
 
 // Account Информация о конкретном аккаунте
 type Account struct {
-	AccountId        string   `json:"accountId,omitempty"`        // Идентификатор аккаунта
-	Type             string   `json:"type,omitempty"`             // Тип аккаунта
-	Status           string   `json:"status,omitempty"`           // Статус аккаунта
-	Equity           *Decimal `json:"equity,omitempty"`           // Доступные средства плюс стоимость открытых позиций
-	UnrealizedProfit *Decimal `json:"unrealizedProfit,omitempty"` // Нереализованная прибыль
-	Cash             []*Money `json:"cash,omitempty"`             // Доступные средства
+	AccountId        string  `json:"accountId,omitempty"`        // Идентификатор аккаунта
+	Type             string  `json:"type,omitempty"`             // Тип аккаунта
+	Status           string  `json:"status,omitempty"`           // Статус аккаунта
+	Equity           Decimal `json:"equity,omitempty"`           // Доступные средства плюс стоимость открытых позиций
+	UnrealizedProfit Decimal `json:"unrealizedProfit,omitempty"` // Нереализованная прибыль
+	Cash             []Money `json:"cash,omitempty"`             // Доступные средства
 }
 
 type AccountResponse struct {
