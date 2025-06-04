@@ -1,6 +1,5 @@
 /*
-аналог google.golang.org/genproto/googleapis/type/money
-https://github.com/googleapis/go-genproto/blob/513f23925822/googleapis/type/money/money.pb.go
+замена  google.golang.org/genproto/googleapis/type/money
 */
 package finam
 

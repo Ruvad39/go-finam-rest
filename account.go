@@ -50,12 +50,10 @@ func (r *AccountRequest) Do(ctx context.Context) (AccountResponse, error) {
 	if err != nil {
 		return result, err
 	}
-	//log.Info("AccountResponse:", "resp", resp)
 	err = resp.DecodeJSON(&result)
 	if err != nil {
 		return result, err
 	}
-
 	return result, nil
 
 }

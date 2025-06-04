@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
+	"time"
 )
 
 func main() {
@@ -25,12 +26,11 @@ func main() {
 		return
 	}
 
-	//account_Id, _ := os.LookupEnv("FINAM_ACCOUNT_ID")
-
-	//accountService := client.GetAccountService()
-	//account, _ := accountService.GetAccount(ctx, accountId)
-	//slog.Info("accountService", "account", account)
-	//return
+	// account_Id, _ := os.LookupEnv("FINAM_ACCOUNT_ID")
+	// getAccount(ctx, client, account_Id)
+	// getPositions(ctx, client, account_Id)
+	// getTrades(ctx, client, account_Id)
+	// return
 
 	// Получение информации о токене сессии. Возьмем список счетов
 	res, err := client.GetTokenDetails(ctx)
@@ -42,8 +42,8 @@ func main() {
 		slog.Info("TokenDetails.AccountIds", "row", row, "accoiuntId", accountId)
 		// получим информацию по конкретному счету
 		getAccount(ctx, client, accountId)
-		getPositions(ctx, client, accountId)
-		//getTrades(ctx, client, accountId)
+		//getPositions(ctx, client, accountId)
+		getTrades(ctx, client, accountId)
 		//getTransactions(ctx, client, accountId)
 	}
 }
@@ -81,6 +81,28 @@ func getPositions(ctx context.Context, client *finam.Client, accountId string) {
 			"Quantity", pos.Quantity.Int(),
 			"AveragePrice", pos.AveragePrice.Float64(),
 			"CurrentPrice", pos.CurrentPrice.Float64(),
+		)
+
+	}
+}
+
+func getTrades(ctx context.Context, client *finam.Client, accountId string) {
+	// запросим все сделки за последние 24 часа
+	var limit int32 = 0
+	start_time := time.Now().Add(-24 * time.Hour) //  24 часа назад
+	end_time := time.Now()
+	res, err := client.NewAccountTradesRequest(accountId).Limit(limit).StartTime(start_time).EndTime(end_time).Do(ctx)
+	if err != nil {
+		slog.Error("AccountsService.GetTrades", "GetTrades", err.Error())
+		return
+	}
+
+	slog.Info("getTrades", "len(Trades)", len(res.Trades))
+	// список позиций
+	for row, t := range res.Trades {
+		slog.Info("AccountsService.GetAccount.Trades",
+			"row", row,
+			"Trade", t,
 		)
 
 	}
