@@ -1,13 +1,12 @@
-# go-finam-grpc
+# go-finam-rest
 
-**gRPC-клиент на Go для работы с API Финама**  
+**rest-клиент на Go для работы с API Финама**  
 [tradeapi.finam](https://tradeapi.finam.ru/docs/about/)
-
 
 ## Установка
 
 ```bash
-go get github.com/Ruvad39/go-finam-grpc
+go get github.com/Ruvad39/go-finam-rest
 ```
 
 ## Примеры
@@ -21,46 +20,33 @@ if err != nil {
     slog.Error("NewClient", "err", err.Error())
 return
 }
-defer client.Close()
 
 // Получение информации о токене сессии
 res, err := client.GetTokenDetails(ctx)
 if err != nil {
-    slog.Error("main", "AuthService.TokenDetails", err.Error())
+slog.Error("main", "AuthService.TokenDetails", err.Error())
 }
 slog.Info("main", "res", res)
+slog.Info("main", "res.AccountIds", res.AccountIds)
 
 ```
 
-### Получить информацию по торговому счету
-```
-// добавим заголовок с авторизацией (accessToken)
-ctx, err = client.WithAuthToken(ctx)
-if err != nil {
-	slog.Error("main", "WithAuthToken", err.Error())
-	// если прошла ошибка, дальше работа бесполезна, не будет авторизации
-	return
-}
-
-// Получение информации по конкретному аккаунту
-accountId := "FINAM_ACCOUNT_ID"
-res, err := client.AccountsService.GetAccount(ctx, &accounts_service.GetAccountRequest{AccountId: accountId})
-if err != nil {
-	slog.Error("accountService", "GetAccount", err.Error())
-}
-slog.Info("main", "Account", res)
-
-// список позиций
-//slog.Info("main", "Positions", res.Positions)
-for row, pos := range res.Positions {
-	slog.Info("positions",
-		"row", row,
-		"Symbol", pos.Symbol,
-		"Quantity", finam.DecimalToFloat64(pos.Quantity),
-		"AveragePrice", finam.DecimalToFloat64(pos.AveragePrice),
-		"CurrentPrice", finam.DecimalToFloat64(pos.CurrentPrice),
-	)
-}	
+###  Получить информацию по торговому счету
+```go
+accountId := "номер счета"
+res, err := client.NewAccountRequest(accountId).Do(ctx)
+	if err != nil {
+		slog.Error("AccountsService.GetAccount", "GetAccount", err.Error())
+		return
+	}
+slog.Info("AccountsService.GetAccount",
+	"AccountId", res.AccountId,
+	"Type", res.Type,
+	"Status", res.Status,
+	"Equity", fmt.Sprintf("%.2f", res.Equity.Float64()),
+	"UnrealizedProfit", fmt.Sprintf("%.2f", res.UnrealizedProfit.Float64()),
+	"Cash", res.Cash[0], // будет ошибка, если нет денег
+)
 ```
 
 
@@ -68,4 +54,8 @@ for row, pos := range res.Positions {
 
 
 ## TODO
-* [ ] MarketDataService.SubscribeLatestTrades
+* [x] AuthService
+* [x] OrdersService
+* [ ] AccountsService
+* [ ] AssetsService
+* [ ] MarketDataService

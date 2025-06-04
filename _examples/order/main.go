@@ -50,7 +50,7 @@ func main() {
 	//getOrder(ctx, client, accountId, orderId)
 
 	// пример выставления ордера на покупку\продажу
-	//newOrder(ctx, client, account_id)
+	newOrder(ctx, client, account_id)
 
 }
 
@@ -60,6 +60,7 @@ func getOrders(ctx context.Context, client *finam.Client, accountId string) {
 	if err != nil {
 		slog.Error("getOrders", "err", err.Error())
 	}
+	slog.Info("getOrders", "кол-во ордеров", len(orders.Orders))
 	for n, row := range orders.Orders {
 		slog.Info("OrdersService", "n", n,
 			"state", row,
@@ -89,15 +90,26 @@ func cancelAllOrders(ctx context.Context, client *finam.Client, accountId string
 
 // создать новый ордер
 func newOrder(ctx context.Context, client *finam.Client, accountId string) {
-	symbol := "SiM5@RTSX"
-	//side := finam.SideTypeBuy
-	//side := finam.SideTypeSell
-	quantity := 1
-	//orderStatus, err := client.NewPlaceOrderRequest(accountId, symbol, side, quantity).Do(ctx)
-	orderStatus, err := client.NewPlaceOrderRequest(accountId, symbol, finam.SideTypeBuy, quantity).
-		Type(finam.OrderTypeLimit).Price(79722).Do(ctx)
+	// symbol := "SiM5@RTSX"
+	symbol := "RU000A106VV3@MISX"
+	quantity := 150 // кол-во в штуках
+
+	// покупка по рынку
+	//orderStatus, err := client.NewPlaceOrderRequest().AccountId(accountId).Symbol(symbol).Quantity(quantity).Buy().Do(ctx)
+
+	// продажа по рынку
+	//orderStatus, err := client.NewPlaceOrderRequest().AccountId(accountId).Symbol(symbol).Quantity(quantity).Sell().Do(ctx)
+
+	// покупка лимитной заявкой
+	//orderStatus, err := client.NewPlaceOrderRequest().
+	//	AccountId(accountId).Symbol(symbol).Quantity(quantity).BuyLimit().LimitPrice(316.01).Do(ctx)
+
+	// продажа лимитной заявкой
+	orderStatus, err := client.NewPlaceOrderRequest().
+		AccountId(accountId).Symbol(symbol).Quantity(quantity).SellLimit().LimitPrice(100.24).Do(ctx)
+
 	if err != nil {
-		slog.Error("CancelOrder", "err", err.Error())
+		slog.Error("NewOrder", "err", err.Error())
 		return
 
 	}

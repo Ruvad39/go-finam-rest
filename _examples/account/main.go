@@ -43,7 +43,7 @@ func main() {
 		slog.Info("TokenDetails.AccountIds", "row", row, "accoiuntId", accountId)
 		// получим информацию по конкретному счету
 		getAccount(ctx, client, accountId)
-		//getPosition(ctx, client, accountId)
+		getPositions(ctx, client, accountId)
 		//getTrades(ctx, client, accountId)
 		//getTransactions(ctx, client, accountId)
 	}
@@ -54,6 +54,7 @@ func getAccount(ctx context.Context, client *finam.Client, accountId string) {
 	res, err := client.NewAccountRequest(accountId).Do(ctx)
 	if err != nil {
 		slog.Error("AccountsService.GetAccount", "GetAccount", err.Error())
+		return
 	}
 	slog.Info("AccountsService.GetAccount",
 		"AccountId", res.AccountId,
@@ -61,6 +62,27 @@ func getAccount(ctx context.Context, client *finam.Client, accountId string) {
 		"Status", res.Status,
 		"Equity", fmt.Sprintf("%.2f", res.Equity.Float64()),
 		"UnrealizedProfit", fmt.Sprintf("%.2f", res.UnrealizedProfit.Float64()),
-		//"Cash", res.Cash,
+		"Cash", res.Cash[0], // будет ошибка, если нет денег
+		//"Cash", res.Cash[0].String(),
 	)
+}
+
+func getPositions(ctx context.Context, client *finam.Client, accountId string) {
+	res, err := client.NewAccountRequest(accountId).Do(ctx)
+	if err != nil {
+		slog.Error("AccountsService.GetAccount", "GetAccount", err.Error())
+		return
+	}
+	slog.Info("getPositions", "len(Positions)", len(res.Positions))
+	// список позиций
+	for row, pos := range res.Positions {
+		slog.Info("AccountsService.GetAccount.Positions",
+			"row", row,
+			"Symbol", pos.Symbol,
+			"Quantity", pos.Quantity.Int(),
+			"AveragePrice", pos.AveragePrice.Float64(),
+			"CurrentPrice", pos.CurrentPrice.Float64(),
+		)
+
+	}
 }

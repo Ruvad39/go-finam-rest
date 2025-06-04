@@ -4,33 +4,20 @@ import (
 	"context"
 	"net/http"
 	"time"
-
-	//"github.com/shopspring/decimal"
-	"google.golang.org/genproto/googleapis/type/decimal"
 )
 
 // Информация о заявке
 type Order struct {
-	// Идентификатор аккаунта
-	AccountId string `json:"accountId,omitempty"`
-	// Символ инструмента
-	Symbol string `json:"symbol,omitempty"`
-	// Количество в шт.
-	Quantity *decimal.Decimal `json:"quantity,omitempty"`
-	// Сторона (long или short)
-	Side Side `json:"side,omitempty"`
-	// Тип заявки
-	Type OrderType `json:"type,omitempty"`
-	// Срок действия заявки
-	TimeInForce string `json:"timeInForce,omitempty"`
-	// Необходимо для лимитной и стоп лимитной заявки
-	LimitPrice *decimal.Decimal `json:"limitPrice,omitempty"`
-	// Необходимо для стоп рыночной и стоп лимитной заявки
-	StopPrice *decimal.Decimal `json:"stopPrice,omitempty"`
-	// Необходимо для стоп рыночной и стоп лимитной заявки
-	StopCondition string `json:"stopCondition,omitempty"`
-	// Уникальный идентификатор заявки. Автоматически генерируется, если не отправлен. (максимум 20 символов)
-	ClientOrderId string `json:"clientOrderId,omitempty"`
+	AccountId     string    `json:"accountId,omitempty"`     // Идентификатор аккаунта
+	Symbol        string    `json:"symbol,omitempty"`        // Символ инструмента
+	Quantity      *Decimal  `json:"quantity,omitempty"`      // Количество в шт.
+	Side          Side      `json:"side,omitempty"`          // Сторона (long или short)
+	Type          OrderType `json:"type,omitempty"`          // Тип заявки
+	TimeInForce   string    `json:"timeInForce,omitempty"`   // Срок действия заявки
+	LimitPrice    *Decimal  `json:"limitPrice,omitempty"`    // Необходимо для лимитной и стоп лимитной заявки
+	StopPrice     *Decimal  `json:"stopPrice,omitempty"`     // Необходимо для стоп рыночной и стоп лимитной заявки
+	StopCondition string    `json:"stopCondition,omitempty"` // Необходимо для стоп рыночной и стоп лимитной заявки
+	ClientOrderId string    `json:"clientOrderId,omitempty"` // Уникальный идентификатор заявки. Автоматически генерируется, если не отправлен. (максимум 20 символов)
 }
 
 // Состояние заявки
@@ -169,12 +156,8 @@ type PlaceOrderRequest struct {
 	order  *Order
 }
 
-func (c *Client) NewPlaceOrderRequest(accountId, symbol string, side Side, quantity int) *PlaceOrderRequest {
+func (c *Client) NewPlaceOrderRequest() *PlaceOrderRequest {
 	order := Order{
-		AccountId:   accountId,
-		Symbol:      symbol,
-		Side:        side,
-		Quantity:    IntToDecimal(quantity),
 		Type:        OrderTypeMarket,
 		TimeInForce: "TIME_IN_FORCE_DAY",
 	}
@@ -182,6 +165,51 @@ func (c *Client) NewPlaceOrderRequest(accountId, symbol string, side Side, quant
 		client: c,
 		order:  &order,
 	}
+}
+
+// AccountId установить счет
+func (r *PlaceOrderRequest) AccountId(value string) *PlaceOrderRequest {
+	r.order.AccountId = value
+	return r
+}
+
+// Symbol установить символ
+func (r *PlaceOrderRequest) Symbol(value string) *PlaceOrderRequest {
+	r.order.Symbol = value
+	return r
+}
+
+func (r *PlaceOrderRequest) Quantity(value int) *PlaceOrderRequest {
+	r.order.Quantity = IntToDecimal(value)
+	return r
+}
+
+// Buy покупка по рынку
+func (r *PlaceOrderRequest) Buy() *PlaceOrderRequest {
+	r.order.Type = OrderTypeMarket
+	r.order.Side = SideTypeBuy
+	return r
+}
+
+// BuyLimit покупка по лимитной цене
+func (r *PlaceOrderRequest) BuyLimit() *PlaceOrderRequest {
+	r.order.Type = OrderTypeLimit
+	r.order.Side = SideTypeBuy
+	return r
+}
+
+// Sell продажа по рынку
+func (r *PlaceOrderRequest) Sell() *PlaceOrderRequest {
+	r.order.Type = OrderTypeMarket
+	r.order.Side = SideTypeSell
+	return r
+}
+
+// Sell продажа по лимитной цене
+func (r *PlaceOrderRequest) SellLimit() *PlaceOrderRequest {
+	r.order.Type = OrderTypeLimit
+	r.order.Side = SideTypeSell
+	return r
 }
 
 func (r *PlaceOrderRequest) Side(side Side) *PlaceOrderRequest {
@@ -193,18 +221,26 @@ func (r *PlaceOrderRequest) Type(orderType OrderType) *PlaceOrderRequest {
 	return r
 }
 
-func (r *PlaceOrderRequest) Price(price float64) *PlaceOrderRequest {
+// LimitPrice установить цену для лимитной и стоп лимитной заявки
+func (r *PlaceOrderRequest) LimitPrice(price float64) *PlaceOrderRequest {
 	r.order.LimitPrice = Float64ToDecimal(price)
 	return r
 }
 
-func (r *PlaceOrderRequest) Quantity(value int) *PlaceOrderRequest {
-	r.order.Quantity = IntToDecimal(value)
+// StopPrice установить цену для стоп рыночной и стоп лимитной заявки
+func (r *PlaceOrderRequest) StopPrice(price float64) *PlaceOrderRequest {
+	r.order.StopPrice = Float64ToDecimal(price)
 	return r
 }
 
-// POST PlaceOrder
-// https://api.finam.ru/v1/accounts/account_id/orders
+// Order
+func (r *PlaceOrderRequest) Order(value *Order) *PlaceOrderRequest {
+	r.order = value
+	return r
+}
+
+// PlaceOrder
+// POST https://api.finam.ru/v1/accounts/account_id/orders
 // в запросе account_id - ваш номер счета
 // в Headers - ваш jwt-token
 // в body raw json Order
@@ -215,8 +251,6 @@ func (r *PlaceOrderRequest) Do(ctx context.Context) (OrderState, error) {
 	req.URLJoin("v1/accounts").URLJoin(r.order.AccountId).URLJoin("orders")
 	req.SetJSONBody(r.order) // в body raw json Order
 	req.authorization = true
-	// или можно самому добавим заголовок с авторизацией (accessToken)
-	//r.client.WithAuthToken(req)
 	resp, err := r.client.SendRequest(req)
 	if err != nil {
 		return result, err

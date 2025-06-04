@@ -72,6 +72,7 @@ func (r *Request) SetJSONBody(v any) *Request {
 		panic(fmt.Errorf("failed to marshal JSON: %w", err))
 	}
 	r.body = bytes.NewReader(data)
+	//log.Debug("SetJSONBody", "data", string(data))
 
 	if r.header == nil {
 		r.header = make(http.Header)
