@@ -31,7 +31,7 @@ func main() {
 
 	// получим список всех ордеров по заданному счету
 	_ = account_id
-	//getOrders(ctx, client, account_id)
+	getOrders(ctx, client, account_id)
 
 	// получим информацию по заданному ордеру
 	//orderId := "665554418102"
@@ -50,7 +50,7 @@ func main() {
 	//getOrder(ctx, client, accountId, orderId)
 
 	// пример выставления ордера на покупку\продажу
-	newOrder(ctx, client, account_id)
+	//newOrder(ctx, client, account_id)
 
 }
 

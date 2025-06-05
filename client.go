@@ -16,7 +16,7 @@ const (
 )
 
 // EndPoints
-const apiURL = "https://ftrr01.finam.ru"
+const apiURL = "https://api.finam.ru" // "https://ftrr01.finam.ru"
 
 // http client
 const defaultHTTPTimeout = time.Second * 10

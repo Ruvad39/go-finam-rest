@@ -7,13 +7,13 @@ import (
 )
 
 type Asset struct {
-	Symbol string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"` //  Символ инструмента ticker@mic
-	Id     string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Ticker string `protobuf:"bytes,3,opt,name=ticker,proto3" json:"ticker,omitempty"` // Тикер инструмента
-	Mic    string `protobuf:"bytes,4,opt,name=mic,proto3" json:"mic,omitempty"`       // mic идентификатор биржи
-	Isin   string `protobuf:"bytes,5,opt,name=isin,proto3" json:"isin,omitempty"`     // Isin идентификатор инструмента
-	Type   string `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`     // Тип инструмента
-	Name   string `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty"`     // Наименование инструмента
+	Symbol string `json:"symbol,omitempty"` //  Символ инструмента ticker@mic
+	Id     string `json:"id,omitempty"`
+	Ticker string `json:"ticker,omitempty"` // Тикер инструмента
+	Mic    string `json:"mic,omitempty"`    // mic идентификатор биржи
+	Isin   string `json:"isin,omitempty"`   // Isin идентификатор инструмента
+	Type   string `json:"type,omitempty"`   // Тип инструмента
+	Name   string `json:"name,omitempty"`   // Наименование инструмента
 }
 
 type AssetsResponse struct {
@@ -87,4 +87,10 @@ func (r *AssetParamsRequest) Do(ctx context.Context) error {
 	fmt.Println("resp", resp)
 	//log.Debug("AssetParamsRequest.Do", slog.Any("resp.Body", resp.Body))
 	return err
+}
+
+// Запрос торговых параметров инструмента
+type AssetInfoRequest struct {
+	client *Client
+	symbol string // Символ инструмента
 }
