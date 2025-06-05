@@ -30,7 +30,10 @@ func main() {
 	}
 
 	// Получение списка доступных инструментов, их описание
-	getAssets(ctx, client)
+	//getAssets(ctx, client)
+
+	//
+	getAsset(ctx, client, "SBER@MISX", account_id)
 	//slog.Info("account_id",account_id)
 	//getAssetParams(ctx, client, "SBER@MISX", account_id)
 
@@ -61,6 +64,15 @@ func getAssets(ctx context.Context, client *finam.Client) {
 				"Mic", sec.Mic,
 			)
 		}
+	}
+}
+
+// Получение списка доступных инструментов, их описание
+func getAsset(ctx context.Context, client *finam.Client, symbol, accountId string) {
+
+	err := client.NewAssetInfoRequest(symbol, accountId).Do(ctx)
+	if err != nil {
+		slog.Error("AssetsRequest", "err", err.Error())
 	}
 }
 

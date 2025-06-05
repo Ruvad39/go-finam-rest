@@ -30,6 +30,14 @@ func main() {
 		return
 	}
 
+	t, err := client.GetTime(ctx)
+	if err != nil {
+		slog.Error("main", "AuthService.TokenDetails", err.Error())
+		return
+	}
+	slog.Info("Time", "t", t)
+	return
+
 	//res, err := client.GetJWT()
 	// Получение информации о токене сессии
 	res, err := client.GetTokenDetails(ctx)

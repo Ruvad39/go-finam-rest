@@ -91,6 +91,36 @@ func (r *AssetParamsRequest) Do(ctx context.Context) error {
 
 // Запрос торговых параметров инструмента
 type AssetInfoRequest struct {
-	client *Client
-	symbol string // Символ инструмента
+	client    *Client
+	symbol    string // Символ инструмента
+	accountId string // ID аккаунта для которого будут подбираться торговые параметры
+}
+
+func (c *Client) NewAssetInfoRequest(symbol, accountId string) *AssetInfoRequest {
+	return &AssetInfoRequest{
+		client:    c,
+		symbol:    symbol,
+		accountId: accountId,
+	}
+}
+
+// Do Получение торговых параметров по инструменту
+// GET /v1/assets/SBER@MISX?account_id=1440399
+func (r *AssetInfoRequest) Do(ctx context.Context) error {
+	var err error
+	//var result AssetsResponse
+	req := NewRequest(http.MethodGet, apiURL).URLJoin("v1/assets", r.symbol)
+	req.SetQuery("account_id", r.accountId)
+	// добавим заголовок с авторизацией (accessToken)
+	//r.client.WithAuthToken(req)
+	// или можно проставить
+	req.authorization = true
+	//log.Debug("AssetParamsRequest.Do", "req.FullURL()", req.FullURL())
+	resp, err := r.client.SendRequest(req)
+	if err != nil {
+		return err
+	}
+	fmt.Println("resp", resp)
+	//log.Debug("AssetParamsRequest.Do", slog.Any("resp.Body", resp.Body))
+	return err
 }
