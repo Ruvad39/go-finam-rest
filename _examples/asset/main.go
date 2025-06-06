@@ -33,9 +33,11 @@ func main() {
 	//getAssets(ctx, client)
 
 	//
-	getAsset(ctx, client, "SBER@MISX", account_id)
+	//getAssetInfo(ctx, client, "SBER@MISX", account_id)
+	symbol := "FEES@MISX" //"EDU5@RTSX" // "SRM5@RTSX" // "SBER@MISX" "FEES@MISX"
+	getAssetInfo(ctx, client, symbol, account_id)
 	//slog.Info("account_id",account_id)
-	//getAssetParams(ctx, client, "SBER@MISX", account_id)
+	//getAssetParams(ctx, client, symbol, account_id)
 
 	// TODO Получение расписания торгов для инструмента
 	//getSchedule(ctx, client, "SBER@MISX")
@@ -68,12 +70,13 @@ func getAssets(ctx context.Context, client *finam.Client) {
 }
 
 // Получение списка доступных инструментов, их описание
-func getAsset(ctx context.Context, client *finam.Client, symbol, accountId string) {
+func getAssetInfo(ctx context.Context, client *finam.Client, symbol, accountId string) {
 
-	err := client.NewAssetInfoRequest(symbol, accountId).Do(ctx)
+	info, err := client.NewAssetInfoRequest(symbol, accountId).Do(ctx)
 	if err != nil {
 		slog.Error("AssetsRequest", "err", err.Error())
 	}
+	slog.Info("AssetsInfoRequest", "info", info)
 }
 
 // Получение списка доступных инструментов, их описание

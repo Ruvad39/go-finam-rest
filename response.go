@@ -7,6 +7,7 @@ package finam
 
 import (
 	"encoding/json"
+	//"github.com/segmentio/encoding/json"
 	"io"
 	"net/http"
 )

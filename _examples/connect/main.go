@@ -29,14 +29,14 @@ func main() {
 		slog.Error("NewClient", "err", err.Error())
 		return
 	}
-
+	// получить текущее время сервера
 	t, err := client.GetTime(ctx)
 	if err != nil {
-		slog.Error("main", "AuthService.TokenDetails", err.Error())
+		slog.Error("main", "GetTime", err.Error())
 		return
 	}
 	slog.Info("Time", "t", t)
-	return
+	//return
 
 	//res, err := client.GetJWT()
 	// Получение информации о токене сессии
