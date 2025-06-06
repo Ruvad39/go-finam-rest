@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"github.com/valyala/fastjson"
+	"math"
 	"net/http"
 )
 
@@ -32,6 +33,21 @@ type AssetInfo struct {
 	LotSize        int32  `json:"lotSize,omitempty"`        // Кол-во штук в лоте
 	ExpirationDate Date   `json:"expirationDate,omitempty"` // Дата экспирации фьючерса
 	//LotSize        Decimal `json:"lotSize,omitempty"`        // Кол-во штук в лоте
+}
+
+// StepPrice рассчитаем шаг цены
+// шаг цены = float64(MinStep) * math.Pow(10, -float64(Decimals))
+func (a *AssetInfo) StepPrice() float64 {
+	return float64(a.MinStep) * math.Pow(10, -float64(a.Decimals))
+}
+
+// NormalizePrice приведем цену к точности шага цены инструмента
+func (a *AssetInfo) NormalizePrice(price float64) float64 {
+	stepPrice := float64(a.MinStep) * math.Pow(10, -float64(a.Decimals))
+	if stepPrice != 0 {
+		return float64(int64(price/stepPrice)) * stepPrice
+	}
+	return price
 }
 
 // UnmarshalJSON

@@ -77,6 +77,7 @@ func getAssetInfo(ctx context.Context, client *finam.Client, symbol, accountId s
 		slog.Error("AssetsRequest", "err", err.Error())
 	}
 	slog.Info("AssetsInfoRequest", "info", info)
+	slog.Info("AssetsInfoRequest", "NormalizePrice = 0.06954", info.NormalizePrice(0.06955))
 }
 
 // Получение списка доступных инструментов, их описание
