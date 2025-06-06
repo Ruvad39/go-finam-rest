@@ -14,6 +14,7 @@ type AccountTrade struct {
 	Size      Decimal   `json:"size,omitempty"`      // Размер в шт.
 	Side      Side      `json:"side,omitempty"`      // Сторона сделки (long или short)
 	Timestamp time.Time `json:"timestamp,omitempty"` // Метка времени
+	OrderId   string    `json:"orderId,omitempty"`   // Идентификатор заявки
 }
 
 // AccountTradesRequest Получение истории по сделкам аккаунта

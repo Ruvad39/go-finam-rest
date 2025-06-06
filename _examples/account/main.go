@@ -41,7 +41,7 @@ func main() {
 		// Получение информации по конкретному аккаунту
 		slog.Info("TokenDetails.AccountIds", "row", row, "accoiuntId", accountId)
 		// получим информацию по конкретному счету
-		getAccount(ctx, client, accountId)
+		//getAccount(ctx, client, accountId)
 		//getPositions(ctx, client, accountId)
 		getTrades(ctx, client, accountId)
 		//getTransactions(ctx, client, accountId)
@@ -98,7 +98,7 @@ func getTrades(ctx context.Context, client *finam.Client, accountId string) {
 	}
 
 	slog.Info("getTrades", "len(Trades)", len(res.Trades))
-	// список позиций
+	// список сделок
 	for row, t := range res.Trades {
 		slog.Info("AccountsService.GetAccount.Trades",
 			"row", row,
