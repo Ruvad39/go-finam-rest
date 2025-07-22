@@ -18,39 +18,39 @@ const jwtTokenTtl = 12 // Время жизни токена JWT в минута
 // Запрос авторизации
 type AuthRequest struct {
 	// API токен (secret key)
-	Secret string `protobuf:"bytes,1,opt,name=secret,proto3" json:"secret,omitempty"`
+	Secret string `json:"secret,omitempty"`
 }
 
 // Информация об авторизации
 type AuthResponse struct {
 	// Полученный JWT-токен
-	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Token string `json:"token,omitempty"`
 }
 
 // Запрос информации о токене
 type TokenDetailsRequest struct {
 	// JWT-токен
-	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Token string `json:"token,omitempty"`
 }
 
 // Информация о доступе к рыночным данным
 type MDPermission struct {
 	// Уровень котировок
-	QuoteLevel string `json:"quoteLevel,omitempty"`
+	QuoteLevel string `json:"quote_level,omitempty"`
 	// Задержка в минутах
-	DelayMinutes int32 `json:"delayMinutes,omitempty"`
+	DelayMinutes int32 `json:"delay_minutes,omitempty"`
 }
 
 // Информация о токене
 type TokenDetailsResponse struct {
 	// Дата и время создания
-	CreatedAt string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"created_at,omitempty"`
 	// Дата и время экспирации
-	ExpiresAt string `json:"expiresAt,omitempty"`
+	ExpiresAt string `json:"expires_at,omitempty"`
 	// Информация о доступе к рыночным данным
 	//MdPermissions []*MDPermission `json:"mdPermissions,omitempty"`
 	// Идентификаторы аккаунтов
-	AccountIds []string `json:"accountIds,omitempty"`
+	AccountIds []string `json:"account_ids,omitempty"`
 }
 
 // WithAuthToken добавим в запрос токен авторизации

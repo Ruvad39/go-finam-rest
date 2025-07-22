@@ -2,49 +2,104 @@ package finam
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
 // Информация о заявке
 type Order struct {
-	AccountId     string    `json:"accountId,omitempty"`     // Идентификатор аккаунта
-	Symbol        string    `json:"symbol,omitempty"`        // Символ инструмента
-	Quantity      *Decimal  `json:"quantity,omitempty"`      // Количество в шт.
-	Side          Side      `json:"side,omitempty"`          // Сторона (long или short)
-	Type          OrderType `json:"type,omitempty"`          // Тип заявки
-	TimeInForce   string    `json:"timeInForce,omitempty"`   // Срок действия заявки
-	LimitPrice    *Decimal  `json:"limitPrice,omitempty"`    // Необходимо для лимитной и стоп лимитной заявки
-	StopPrice     *Decimal  `json:"stopPrice,omitempty"`     // Необходимо для стоп рыночной и стоп лимитной заявки
-	StopCondition string    `json:"stopCondition,omitempty"` // Необходимо для стоп рыночной и стоп лимитной заявки
-	ClientOrderId string    `json:"clientOrderId,omitempty"` // Уникальный идентификатор заявки. Автоматически генерируется, если не отправлен. (максимум 20 символов)
+	AccountId     string    `json:"account_id,omitempty"`      // Идентификатор аккаунта
+	Symbol        string    `json:"symbol,omitempty"`          // Символ инструмента
+	Quantity      *Decimal  `json:"quantity,omitempty"`        // Количество в шт.
+	Side          Side      `json:"side,omitempty"`            // Сторона (long или short)
+	Type          OrderType `json:"type,omitempty"`            // Тип заявки
+	TimeInForce   string    `json:"time_in_force,omitempty"`   // Срок действия заявки
+	LimitPrice    *Decimal  `json:"limit_price,omitempty"`     // Необходимо для лимитной и стоп лимитной заявки
+	StopPrice     *Decimal  `json:"stop_price,omitempty"`      // Необходимо для стоп рыночной и стоп лимитной заявки
+	StopCondition string    `json:"stop_condition,omitempty"`  // Необходимо для стоп рыночной и стоп лимитной заявки
+	ClientOrderId string    `json:"client_order_id,omitempty"` // Уникальный идентификатор заявки. Автоматически генерируется, если не отправлен. (максимум 20 символов)
+}
+
+func (o Order) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("Order{\n")
+	builder.WriteString(fmt.Sprintf("\tAccountId: %q,\n", o.AccountId))
+	builder.WriteString(fmt.Sprintf("\tSymbol: %q,\n", o.Symbol))
+
+	if o.Quantity != nil {
+		builder.WriteString(fmt.Sprintf("\tQuantity: %s,\n", o.Quantity.Value))
+	} else {
+		builder.WriteString("\tQuantity: nil,\n")
+	}
+
+	builder.WriteString(fmt.Sprintf("\tSide: %s,\n", o.Side))
+	builder.WriteString(fmt.Sprintf("\tType: %s,\n", o.Type))
+	builder.WriteString(fmt.Sprintf("\tTimeInForce: %q,\n", o.TimeInForce))
+
+	if o.LimitPrice != nil {
+		builder.WriteString(fmt.Sprintf("\tLimitPrice: %s,\n", o.LimitPrice.Value))
+	} else {
+		builder.WriteString("\tLimitPrice: nil,\n")
+	}
+
+	if o.StopPrice != nil {
+		builder.WriteString(fmt.Sprintf("\tStopPrice: %s,\n", o.StopPrice.Value))
+	} else {
+		builder.WriteString("\tStopPrice: nil,\n")
+	}
+
+	builder.WriteString(fmt.Sprintf("\tStopCondition: %q,\n", o.StopCondition))
+	builder.WriteString(fmt.Sprintf("\tClientOrderId: %q,\n", o.ClientOrderId))
+	builder.WriteString("}")
+
+	return builder.String()
 }
 
 // Состояние заявки
 type OrderState struct {
 	// Идентификатор заявки
-	OrderId string `json:"orderId,omitempty"`
+	OrderId string `json:"order_id,omitempty"`
 	// Идентификатор исполнения
-	ExecId string `json:"execId,omitempty"`
+	ExecId string `json:"exec_id,omitempty"`
 	// Статус заявки
 	Status string `json:"status,omitempty"`
+	// Дата и время выставления заявки
+	TransactAt time.Time `json:"transact_at,omitempty"`
+	// Дата и время принятия заявки
+	AcceptAt time.Time `json:"accept_at,omitempty"`
+	// Дата и время отмены заявки
+	WithdrawAt time.Time `json:"withdraw_at,omitempty"`
 	// Заявка
 	Order *Order `json:"order,omitempty"`
-	// Дата и время выставления заявки
-	TransactAt time.Time `json:"transactAt,omitempty"`
-	//TransactAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=transact_at,json=transactAt,proto3" json:"transact_at,omitempty"`
-	// Дата и время принятия заявки
-	AcceptAt time.Time `json:"acceptAt,omitempty"`
-	//AcceptAt *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=accept_at,json=acceptAt,proto3" json:"accept_at,omitempty"`
-	// Дата и время  отмены заявки
-	WithdrawAt time.Time `json:"withdrawAt,omitempty"`
-	//WithdrawAt    *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=withdraw_at,json=withdrawAt,proto3" json:"withdraw_at,omitempty"`
+}
+
+func (os OrderState) String() string {
+	var builder strings.Builder
+
+	builder.WriteString("OrderState{\n")
+	builder.WriteString(fmt.Sprintf("\tOrderId: %q,\n", os.OrderId))
+	builder.WriteString(fmt.Sprintf("\tExecId: %q,\n", os.ExecId))
+	builder.WriteString(fmt.Sprintf("\tStatus: %q,\n", os.Status))
+	builder.WriteString(fmt.Sprintf("\tTransactAt: %s,\n", os.TransactAt.Format(time.RFC3339)))
+	builder.WriteString(fmt.Sprintf("\tAcceptAt: %s,\n", os.AcceptAt.Format(time.RFC3339)))
+	builder.WriteString(fmt.Sprintf("\tWithdrawAt: %s,\n", os.WithdrawAt.Format(time.RFC3339)))
+	builder.WriteString("}")
+	if os.Order != nil {
+		orderStr := strings.Replace(os.Order.String(), "\n", "\n\t", -1)
+		builder.WriteString(fmt.Sprintf("\tOrder: %s,\n", orderStr))
+	} else {
+		builder.WriteString("\tOrder: nil,\n")
+	}
+	return builder.String()
 }
 
 // Список активных торговых заявок
 type OrdersResponse struct {
 	// Заявки
-	Orders []*OrderState `protobuf:"bytes,1,rep,name=orders,proto3" json:"orders,omitempty"`
+	Orders []*OrderState `json:"orders,omitempty"`
 }
 
 // GetOrdersRequest Получение списка ордеров по счету
@@ -81,6 +136,7 @@ func (r *GetOrdersRequest) Do(ctx context.Context) (OrdersResponse, error) {
 		return result, err
 	}
 	//log.Info("OrdersRequest.Do", slog.Any("resp", resp))
+	//fmt.Println("resp", resp)
 	return result, nil
 
 }

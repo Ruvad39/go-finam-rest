@@ -10,14 +10,14 @@ var (
 	logLevel = &slog.LevelVar{} // INFO
 	log      = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		Level: logLevel,
-	})).With(slog.String("package", "go-alor-http"))
+	})).With(slog.String("package", "go-finam-http"))
 )
 
 func SetLogger(logger *slog.Logger) {
 	log = logger
 }
 
-// SetLogDebug установим уровень логирования Debug
+// SetLogDebug установим уровень логирования Debug (true/false)
 func SetLogDebug(debug bool) {
 	if debug {
 		logLevel.Set(slog.LevelDebug)

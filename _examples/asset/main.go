@@ -34,9 +34,10 @@ func main() {
 
 	//
 	//getAssetInfo(ctx, client, "SBER@MISX", account_id)
-	symbol := "FEES@MISX" //"EDU5@RTSX" // "SRM5@RTSX" // "SBER@MISX" "FEES@MISX"
+	symbol := "RIU5@RTSX" //"FEES@MISX" //"EDU5@RTSX" // "SRM5@RTSX" // "SBER@MISX"
 	getAssetInfo(ctx, client, symbol, account_id)
 	//slog.Info("account_id",account_id)
+	// TODO
 	//getAssetParams(ctx, client, symbol, account_id)
 
 	// TODO Получение расписания торгов для инструмента
@@ -77,7 +78,7 @@ func getAssetInfo(ctx context.Context, client *finam.Client, symbol, accountId s
 		slog.Error("AssetsRequest", "err", err.Error())
 	}
 	slog.Info("AssetsInfoRequest", "info", info)
-	slog.Info("AssetsInfoRequest", "NormalizePrice = 0.06954", info.NormalizePrice(0.06955))
+	//slog.Info("AssetsInfoRequest", "NormalizePrice = 0.06954", info.NormalizePrice(0.06955))
 }
 
 // Получение списка доступных инструментов, их описание

@@ -21,17 +21,17 @@ type Asset struct {
 
 // информации по конкретному инструменту
 type AssetInfo struct {
-	Board          string `json:"board,omitempty"`          // Код режима торгов
-	Id             string `json:"id,omitempty"`             // Идентификатор инструмента
-	Ticker         string `json:"ticker,omitempty"`         // Тикер инструмента
-	Mic            string `json:"mic,omitempty"`            // mic идентификатор биржи
-	Isin           string `json:"isin,omitempty"`           // Isin идентификатор инструмента
-	Type           string `json:"type,omitempty"`           // Тип инструмента
-	Name           string `json:"name,omitempty"`           // Наименование инструмента
-	Decimals       int32  `json:"decimals,omitempty"`       // Кол-во десятичных знаков в цене
-	MinStep        int64  `json:"minStep,omitempty"`        // Минимальный шаг цены
-	LotSize        int32  `json:"lotSize,omitempty"`        // Кол-во штук в лоте
-	ExpirationDate Date   `json:"expirationDate,omitempty"` // Дата экспирации фьючерса
+	Board          string `json:"board,omitempty"`           // Код режима торгов
+	Id             string `json:"id,omitempty"`              // Идентификатор инструмента
+	Ticker         string `json:"ticker,omitempty"`          // Тикер инструмента
+	Mic            string `json:"mic,omitempty"`             // mic идентификатор биржи
+	Isin           string `json:"isin,omitempty"`            // Isin идентификатор инструмента
+	Type           string `json:"type,omitempty"`            // Тип инструмента
+	Name           string `json:"name,omitempty"`            // Наименование инструмента
+	Decimals       int32  `json:"decimals,omitempty"`        // Кол-во десятичных знаков в цене
+	MinStep        int64  `json:"min_step,omitempty"`        // Минимальный шаг цены
+	LotSize        int32  `json:"lot_size,omitempty"`        // Кол-во штук в лоте
+	ExpirationDate Date   `json:"expiration_date,omitempty"` // Дата экспирации фьючерса
 	//LotSize        Decimal `json:"lotSize,omitempty"`        // Кол-во штук в лоте
 }
 
@@ -71,22 +71,22 @@ func (a *AssetInfo) UnmarshalJSON(data []byte) error {
 	a.Name = string(v.GetStringBytes("name"))
 	a.Decimals = int32(v.GetInt64("decimals"))
 	// Особенная обработка minStep (может быть строкой или числом)
-	minStepVal := string(v.GetStringBytes("minStep"))
+	minStepVal := string(v.GetStringBytes("min_step"))
 	a.MinStep, err = cast.ToInt64E(minStepVal)
 	if err != nil {
 		return fmt.Errorf("invalid minStep value: %v", minStepVal)
 	}
 
 	// Обработка Decimal (lotSize)
-	lotSizeVal := v.Get("lotSize")
+	lotSizeVal := v.Get("lot_size")
 	if lotSizeVal.Exists("value") {
 		//a.LotSize.Value = string(lotSizeVal.GetStringBytes("value"))
 		a.LotSize = cast.ToInt32(string(lotSizeVal.GetStringBytes("value")))
 	}
 
 	// Обработка Date (expirationDate)
-	if v.Exists("expirationDate") {
-		dateVal := v.Get("expirationDate")
+	if v.Exists("expiration_date") {
+		dateVal := v.Get("expiration_date")
 		if dateVal.Exists("year") {
 			a.ExpirationDate.Year = int32(dateVal.GetInt64("year"))
 		}
@@ -152,6 +152,7 @@ func (c *Client) NewAssetParamsRequest(symbol, accountId string) *AssetParamsReq
 	}
 }
 
+// TODO в работе
 // Do Получение торговых параметров по инструменту
 // GET /v1/assets/SBER@MISX/params?account_id=1440399
 func (r *AssetParamsRequest) Do(ctx context.Context) error {

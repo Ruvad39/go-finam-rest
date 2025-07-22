@@ -8,13 +8,13 @@ import (
 
 // Информация о сделке
 type AccountTrade struct {
-	TradeId   string    `json:"tradeId,omitempty"`   // Идентификатор сделки
+	TradeId   string    `json:"trade_id,omitempty"`  // Идентификатор сделки
 	Symbol    string    `json:"symbol,omitempty"`    // Символ инструмента
 	Price     Decimal   `json:"price,omitempty"`     // Цена исполнения
 	Size      Decimal   `json:"size,omitempty"`      // Размер в шт.
 	Side      Side      `json:"side,omitempty"`      // Сторона сделки (long или short)
 	Timestamp time.Time `json:"timestamp,omitempty"` // Метка времени
-	OrderId   string    `json:"orderId,omitempty"`   // Идентификатор заявки
+	OrderId   string    `json:"order_id,omitempty"`  // Идентификатор заявки
 }
 
 // AccountTradesRequest Получение истории по сделкам аккаунта

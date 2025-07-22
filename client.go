@@ -19,7 +19,7 @@ const (
 const apiURL = "https://api.finam.ru" // "https://ftrr01.finam.ru"
 
 // http client
-const defaultHTTPTimeout = time.Second * 10
+const defaultHTTPTimeout = time.Second * 30
 
 var dialer = &net.Dialer{
 	Timeout:   30 * time.Second,

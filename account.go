@@ -7,18 +7,26 @@ import (
 
 // Account Информация о конкретном аккаунте
 type Account struct {
-	AccountId        string  `json:"accountId,omitempty"`        // Идентификатор аккаунта
-	Type             string  `json:"type,omitempty"`             // Тип аккаунта
-	Status           string  `json:"status,omitempty"`           // Статус аккаунта
-	Equity           Decimal `json:"equity,omitempty"`           // Доступные средства плюс стоимость открытых позиций
-	UnrealizedProfit Decimal `json:"unrealizedProfit,omitempty"` // Нереализованная прибыль
-	Cash             []Money `json:"cash,omitempty"`             // Доступные средства
+	AccountId        string  `json:"account_id,omitempty"`        // Идентификатор аккаунта
+	Type             string  `json:"type,omitempty"`              // Тип аккаунта
+	Status           string  `json:"status,omitempty"`            // Статус аккаунта
+	Equity           Decimal `json:"equity,omitempty"`            // Доступные средства плюс стоимость открытых позиций
+	UnrealizedProfit Decimal `json:"unrealized_profit,omitempty"` // Нереализованная прибыль
+	Cash             []Money `json:"cash,omitempty"`              // Доступные средства
 }
 
 type AccountResponse struct {
 	Account
 	Positions []*Position `json:"positions,omitempty"` // Позиции. Открытые, плюс теоретические (по неисполненным активным заявкам)
 
+}
+
+// Информация о позиции
+type Position struct {
+	Symbol       string  `json:"symbol,omitempty"`        // Символ инструмента
+	Quantity     Decimal `json:"quantity,omitempty"`      // Количество в шт., значение со знаком определяющее (long-short)
+	AveragePrice Decimal `json:"average_price,omitempty"` // Средняя цена
+	CurrentPrice Decimal `json:"current_price,omitempty"` // Текущая цена
 }
 
 // AccountRequest Получение Информация о конкретном аккаунте

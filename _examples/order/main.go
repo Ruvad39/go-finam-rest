@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -33,12 +34,13 @@ func main() {
 	_ = account_id
 	getOrders(ctx, client, account_id)
 
+	// TODO
 	// получим информацию по заданному ордеру
-	//orderId := "665554418102"
-	//getOrder(ctx, client, accountId, orderId)
+	//orderId := "68534984838"
+	//getOrder(ctx, client, account_id, orderId)
 
 	// Отмена биржевой заявки
-	//orderId := "1892950661839315680" // "665554418102"
+	//orderId := "68534810466" // "665554418102"
 	//cancelOrder(ctx, client, account_id, orderId)
 
 	// отмена всех ордеров
@@ -62,9 +64,10 @@ func getOrders(ctx context.Context, client *finam.Client, accountId string) {
 	}
 	slog.Info("getOrders", "кол-во ордеров", len(orders.Orders))
 	for n, row := range orders.Orders {
-		slog.Info("OrdersService", "n", n,
-			"state", row,
-			"order", row.Order)
+		fmt.Println("nrow", n, row.String())
+		//slog.Info("OrdersService", "n", n,
+		//	"state", row,
+		//	"order", row.Order.String())
 	}
 
 }
@@ -77,8 +80,7 @@ func cancelOrder(ctx context.Context, client *finam.Client, accountId, orderId s
 		return
 
 	}
-	slog.Info("CancelOrder", slog.Any("orderStatus", orderStatus))
-	slog.Info("CancelOrder", slog.Any("order", orderStatus.Order))
+	fmt.Println(orderStatus)
 
 }
 func cancelAllOrders(ctx context.Context, client *finam.Client, accountId string) {
@@ -90,9 +92,8 @@ func cancelAllOrders(ctx context.Context, client *finam.Client, accountId string
 
 // создать новый ордер
 func newOrder(ctx context.Context, client *finam.Client, accountId string) {
-	// symbol := "SiM5@RTSX"
-	symbol := "RU000A106VV3@MISX"
-	quantity := 150 // кол-во в штуках
+	symbol := "SRU5@RTSX"
+	quantity := 1 // кол-во в штуках
 
 	// покупка по рынку
 	//orderStatus, err := client.NewPlaceOrderRequest().AccountId(accountId).Symbol(symbol).Quantity(quantity).Buy().Do(ctx)
@@ -102,17 +103,18 @@ func newOrder(ctx context.Context, client *finam.Client, accountId string) {
 
 	// покупка лимитной заявкой
 	//orderStatus, err := client.NewPlaceOrderRequest().
-	//	AccountId(accountId).Symbol(symbol).Quantity(quantity).BuyLimit().LimitPrice(316.01).Do(ctx)
+	//	AccountId(accountId).Symbol(symbol).Quantity(quantity).BuyLimit().LimitPrice(31992).Do(ctx)
 
 	// продажа лимитной заявкой
 	orderStatus, err := client.NewPlaceOrderRequest().
-		AccountId(accountId).Symbol(symbol).Quantity(quantity).SellLimit().LimitPrice(100.24).Do(ctx)
+		AccountId(accountId).Symbol(symbol).Quantity(quantity).SellLimit().LimitPrice(31998).Do(ctx)
 
 	if err != nil {
 		slog.Error("NewOrder", "err", err.Error())
 		return
 
 	}
-	slog.Info("NewOrder", slog.Any("orderStatus", orderStatus))
-	slog.Info("NewOrder", slog.Any("order", orderStatus.Order))
+	fmt.Println(orderStatus)
+	//slog.Info("NewOrder", slog.Any("orderStatus", orderStatus))
+	//slog.Info("NewOrder", slog.Any("order", orderStatus.Order))
 }

@@ -11,11 +11,11 @@ type Quote struct {
 	Symbol    string    `json:"symbol,omitempty"`    // Символ инструмента
 	Timestamp time.Time `json:"timestamp,omitempty"` // Метка времени
 	Ask       Decimal   `json:"ask,omitempty"`       // Аск. 0 при отсутствии активного аска
-	AskSize   Decimal   `json:"askSiz,omitempty"`    // Размер аска
+	AskSize   Decimal   `json:"ask_size,omitempty"`  // Размер аска
 	Bid       Decimal   `json:"bid,omitempty"`       // Бид. 0 при отсутствии активного бида
-	BidSize   Decimal   `json:"bidSize,omitempty"`   // Размер бида
+	BidSize   Decimal   `json:"bid_size,omitempty"`  // Размер бида
 	Last      Decimal   `json:"last,omitempty"`      // Цена последней сделки
-	LastSize  Decimal   `json:"lastSize,omitempty"`  // Размер последней сделки
+	LastSize  Decimal   `json:"last_size,omitempty"` // Размер последней сделки
 	Volume    Decimal   `json:"volume,omitempty"`    // Дневной объем сделок
 	Turnover  Decimal   `json:"turnover,omitempty"`  // Дневной оборот сделок
 	Open      Decimal   `json:"open,omitempty"`      // Цена открытия. Дневная

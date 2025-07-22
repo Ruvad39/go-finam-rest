@@ -71,7 +71,7 @@ func Float64ToDecimal(f float64) *Decimal {
 
 type Money struct {
 	// The three-letter currency code defined in ISO 4217.
-	CurrencyCode string `json:"currencyCode,omitempty"`
+	CurrencyCode string `json:"currency_code,omitempty"`
 	// The whole units of the amount.
 	// For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
 	Units int64 `json:"units,omitempty"`
